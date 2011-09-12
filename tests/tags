@@ -1,0 +1,18 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ReadTimeRecords	.\testReadTimeRecords.py	/^from timerecordanalysis.readrecords import ReadTimeRecords$/;"	i
+_block_indent	.\testReadTimeRecords.py	/^def _block_indent():$/;"	f
+_block_split_line	.\testReadTimeRecords.py	/^def _block_split_line():$/;"	f
+_method_split_line	.\testReadTimeRecords.py	/^def _method_split_line(methodName, flag=False):$/;"	f
+os	.\testReadTimeRecords.py	/^import os$/;"	i
+sys	.\testReadTimeRecords.py	/^import sys$/;"	i
+test_calculateCostTimes	.\testReadTimeRecords.py	/^def test_calculateCostTimes():$/;"	f
+test_getRecordEvent	.\testReadTimeRecords.py	/^def test_getRecordEvent():$/;"	f
+test_getRecordEvent_category	.\testReadTimeRecords.py	/^def test_getRecordEvent_category(records):$/;"	f
+test_getRecordEvent_costTime	.\testReadTimeRecords.py	/^def test_getRecordEvent_costTime(records):$/;"	f
+test_setRecordsFolder	.\testReadTimeRecords.py	/^def test_setRecordsFolder():$/;"	f
+u	.\testReadTimeRecords.py	/^def u(str, encoding):$/;"	f
