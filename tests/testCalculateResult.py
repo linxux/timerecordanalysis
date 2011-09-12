@@ -69,8 +69,8 @@ def test_getCalculateContentByTimes():
 
     baseDir = "E:/doc/txt/time_manager/2_summarize_总结/tmp"
 
-    startDate = '20110627'
-    endDate = '20110702'
+    startDate = '20110905'
+    endDate = '20110911'
     contents = records.getCalculateContentByTimes(startDate, endDate)
     resultFile = startDate + "_" + endDate + ".txt"
     records.writeCalculteFile(resultFile, contents, baseDir)
