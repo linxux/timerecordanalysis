@@ -332,6 +332,7 @@ class ReadTimeRecords:
                 lines.append(" ~ ")
                 lines.append(endD.isoformat())
                 days = (endD - startD).days
+            lines.append(", days: %(days)d" % {"days": days+1})
             lines.append("\n")
             thours = (days + 1) * 24
             tminutes = thours * 60
@@ -343,17 +344,17 @@ class ReadTimeRecords:
                 self.logger.error(msg)
                 return msg 
             workingMins = self.workdays * 24 * 60
-            lines.append("Working Days Time: %(costHours)s (%(costTime)dm), (ratio)%(ratio).2f%% \n" % {"costHours": self._getCostedHoursStr(workingMins), "costTime": workingMins, "ratio": workingMins*100/tminutes})
+            lines.append("Working Days Time: %(costHours)s (%(costTime)dm), (ratio)%(ratio).2f%%, (%(workD)d * 24h)\n" % {"costHours": self._getCostedHoursStr(workingMins), "costTime": workingMins, "ratio": (workingMins*100*1.0)/(tminutes*1.0), "workD": self.workdays})
             weekendMins = (days - self.workdays + 1) * 24 * 60
-            lines.append("Weekend Days Time: %(costHours)s (%(costTime)dm), (ratio)%(ratio).2f%% \n" % {"costHours": self._getCostedHoursStr(weekendMins), "costTime": weekendMins, "ratio": weekendMins*100/tminutes})
+            lines.append("Weekend Days Time: %(costHours)s (%(costTime)dm), (ratio)%(ratio).2f%%, (%(weekD)d * 24h) \n" % {"costHours": self._getCostedHoursStr(weekendMins), "costTime": weekendMins, "ratio": (weekendMins*100*1.0)/(tminutes*1.0), "weekD": days - self.workdays + 1})
 
             lines.append("\n == Specific Things Total Hours ==\n")
             officeMins = self.workdays * 9 * 60
-            lines.append("Office Times: %(costHours)s (%(costTime)dm), (ratio)%(ratio).2f%% \n" % {"costHours": self._getCostedHoursStr(officeMins), "costTime": officeMins, "ratio": officeMins*100/tminutes})
+            lines.append("Office Times: %(costHours)s (%(costTime)dm), (ratio)%(ratio).2f%%, (%(workD)d * 9h) \n" % {"costHours": self._getCostedHoursStr(officeMins), "costTime": officeMins, "ratio": (officeMins*100*1.0)/(tminutes*1.0), "workD": self.workdays})
             sleepMins = (days + 1) * 8 * 60
-            lines.append("Sleeping Times: %(costHours)s (%(costTime)dm), (ratio)%(ratio).2f%% \n" % {"costHours": self._getCostedHoursStr(sleepMins), "costTime": sleepMins, "ratio": sleepMins*100/tminutes})
+            lines.append("Sleeping Times: %(costHours)s (%(costTime)dm), (ratio)%(ratio).2f%%, (%(totalD)d * 8h) \n" % {"costHours": self._getCostedHoursStr(sleepMins), "costTime": sleepMins, "ratio": (sleepMins*100*1.0)/(tminutes*1.0), "totalD": days + 1})
             otherMins = tminutes - officeMins - sleepMins
-            lines.append("Other Times: %(costHours)s (%(costTime)dm), (ratio)%(ratio).2f%% \n" % {"costHours": self._getCostedHoursStr(otherMins), "costTime": otherMins, "ratio": otherMins*100/tminutes})
+            lines.append("Other Times: %(costHours)s (%(costTime)dm), (ratio)%(ratio).2f%% \n" % {"costHours": self._getCostedHoursStr(otherMins), "costTime": otherMins, "ratio": (otherMins*100*1.0)/(tminutes*1.0)})
 
             lines.append(blockline)
 
@@ -361,12 +362,12 @@ class ReadTimeRecords:
             for key, value in self.resultDict.iteritems():
                 avgDays = self.workdays if key is "1" else (days + 1)
                 avgMins = value[0] / avgDays
-                lines.append("\t %(mCategory)s: %(costHours)s (%(costTime)dm), (ratio)%(ratio).2f%%, (avg)%(avgHours)s (%(avgTimes)sm)\n\n" % {"mCategory": self._getCategoryDesc("Category", key), "costHours": self._getCostedHoursStr(value[0]), "costTime": value[0], "ratio": value[0] * 100 / tminutes, "avgHours": self._getCostedHoursStr(avgMins), "avgTimes": avgMins})
+                lines.append("\t %(mCategory)s: %(costHours)s (%(costTime)dm), (ratio)%(ratio).2f%%, (avg)%(avgHours)s (%(avgTimes)sm)\n\n" % {"mCategory": self._getCategoryDesc("Category", key), "costHours": self._getCostedHoursStr(value[0]), "costTime": value[0], "ratio": (value[0] * 100 * 1.0) / (tminutes * 1.0), "avgHours": self._getCostedHoursStr(avgMins), "avgTimes": avgMins})
 
                 if len(value[1]) != 0:
                     uncategorytimes = value[0]
+                    sublines.append("== Category %(category)s ==\n" % {"category": key})
                     for subkey, subvalue in value[1].iteritems():
-                        sublines.append("== Category %(category)s ==\n" % {"category": key})
                         subkey = self._getCategoryDesc("Category" + key, subkey)
                         sublines.append(self._getSubCategoryLine(subkey, subvalue, value[0], subvalue/avgDays))
                         uncategorytimes = uncategorytimes - subvalue
@@ -381,13 +382,15 @@ class ReadTimeRecords:
                 lines.append("-" * 80 + "\n")
                 lines.append("SubCategory Recorded Hours:\n\n")
                 lines = lines + sublines
+            
+            lines.append(blockline)
 
             return lines
 
     def _getSubCategoryLine(self, subCategory, subCostedTimes, costedTimes, avgTimes):
         subhourstr = self._getCostedHoursStr(subCostedTimes) 
         avghourstr = self._getCostedHoursStr(avgTimes)
-        return "\t %(subCategory)s: %(sHoursstr)s (%(sMinutes)dm), (radio)%(sRatio).2f%%, (avg)%(avgHours)s (%(avgMins)sm)\n" % {"subCategory": subCategory, "sHoursstr": subhourstr, "sMinutes": subCostedTimes, "sRatio": subCostedTimes * 100 / costedTimes, "avgHours": avghourstr, "avgMins": avgTimes}
+        return "\t %(subCategory)s: %(sHoursstr)s (%(sMinutes)dm), (radio)%(sRatio).2f%%, (avg)%(avgHours)s (%(avgMins)sm)\n" % {"subCategory": subCategory, "sHoursstr": subhourstr, "sMinutes": subCostedTimes, "sRatio": (subCostedTimes * 100 * 1.0)/ (costedTimes * 1.0), "avgHours": avghourstr, "avgMins": avgTimes}
 
     def _getCostedHoursStr(self, costedTimes):
         sHour = costedTimes/60

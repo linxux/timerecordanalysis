@@ -71,6 +71,7 @@ def test_getCalculateContentByTimes():
 
     startDate = '20110905'
     endDate = '20110911'
+    #records.setWorkDays(4)
     contents = records.getCalculateContentByTimes(startDate, endDate)
     resultFile = startDate + "_" + endDate + ".txt"
     records.writeCalculteFile(resultFile, contents, baseDir)

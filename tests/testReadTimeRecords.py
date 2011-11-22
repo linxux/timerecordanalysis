@@ -1,5 +1,5 @@
 #   testReadTimeRecords.py
-#-*- encoding: utf-8 -*-
+#-*- coding: utf-8 -*-
 import os
 import sys
 from timerecordanalysis.readrecords import ReadTimeRecords
